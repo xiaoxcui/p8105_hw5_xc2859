@@ -50,7 +50,7 @@ birthday_probs =
 birthday_probs |> 
   ggplot(aes(x = group_size, y = probability)) + 
   geom_point() + 
-  geom_smooth() +
+  geom_path() +
   labs(
     title = "Probability of shared birthdays by group size", 
     x = "Group size", 
@@ -97,3 +97,25 @@ tidy_df =
 ```
 
 The cleaned dataset contains `r nrow(tidy_df)` observations from 20 participants, with 10 from the control arm and 10 from the experimental arm. Each participant has outcome measurements recorded over 8 weeks, and each row represents one participant's outcome measurement at a specific week. The `r ncol(tidy_df)` variables include `subject_id`, `study_arm`, `week`, and `outcome`.  
+
+**Create a spaghetti plot**
+```{r}
+tidy_df |> 
+  ggplot(aes(
+    x = week, 
+    y = outcome, 
+    group = subject_id, 
+    color = study_arm
+  )) + 
+  geom_point() + 
+  geom_path() + 
+  facet_grid(~study_arm) + 
+  labs(
+    title = "Individual outcomes over time by study arm", 
+    x = "Week", 
+    y = "Outcome value", 
+    color = "Study arm"
+  )
+```
+
+The plot shows that the outcomes of different study arms vary over time. In the control group, although there were variations among different individuals, the outcome values remained relatively unchanged throughout 8 weeks. However, in the experimental group, participants showed an increasing trend in outcomes over time. 
