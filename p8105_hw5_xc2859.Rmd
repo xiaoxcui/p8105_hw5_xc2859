@@ -5,3 +5,33 @@ date: "2026-11-17"
 output: github_document
 ---
 
+# Problem 1
+
+```{r}
+library(tidyverse)
+set.seed(1)
+```
+
+**Write a function to check for shared birthdays**
+```{r}
+birthday_sim = function(n) {
+  
+  birthdays = sample(1:365, size = n, replace = TRUE)
+  
+  any(duplicated(birthdays))
+  
+}
+```
+
+**Run 10,000 simulations for each group size**
+```{r}
+sim_results = 
+  expand_grid(
+    group_size = 2:50, 
+    iter = 1:10000
+  ) |>
+  mutate(
+    shared_birthday = map_lgl(group_size, birthday_sim)
+  )
+```
+
