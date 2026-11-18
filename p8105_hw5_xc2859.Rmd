@@ -153,3 +153,15 @@ sim_results_ttest =
   )
 ```
 
+**Calculate power for each true mean mu**
+
+```{r}
+sim_results_ttest |> 
+  group_by(true_mean) |> 
+  mutate(
+    power = mean(reject_null)
+  ) |> 
+  ungroup()
+```
+
+
