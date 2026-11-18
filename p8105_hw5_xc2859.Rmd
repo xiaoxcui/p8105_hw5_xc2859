@@ -150,13 +150,8 @@ sim_results_ttest =
   unnest(ttest_results) |>
   mutate(
     reject_null = p.value < 0.05
-  )
-```
-
-**Calculate power for each true mean mu**
-
-```{r}
-sim_results_ttest |> 
+  ) |> 
+# Calculate power for each true mean
   group_by(true_mean) |> 
   mutate(
     power = mean(reject_null)
@@ -164,4 +159,19 @@ sim_results_ttest |>
   ungroup()
 ```
 
+**Plot power against true mean**
+
+```{r}
+sim_results_ttest |> 
+  ggplot(aes(x = true_mean, y = power)) + 
+  geom_point() + 
+  geom_path() + 
+  labs(
+    title = "Statistical power by true mean", 
+    x = "True mean value", 
+    y = "Power"
+  )
+```
+
+According to the plot, when the true mean is 0, the statistical power is approximately 0.05. As the true mean increases, statistical power rises and approaches 1, reaching a plateau at a true mean of 4. This suggests that, when sample size and standard deviation are held constant, larger effect sizes are more likely to be detected by a statistical test. 
 
