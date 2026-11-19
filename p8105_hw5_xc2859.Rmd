@@ -175,3 +175,44 @@ sim_results_ttest |>
 
 According to the plot, when the true mean is 0, the statistical power is approximately 0.05. As the true mean increases, statistical power rises and approaches 1, reaching a plateau at a true mean of 4. This suggests that, when sample size and standard deviation are held constant, larger effect sizes are more likely to be detected by a statistical test. 
 
+**Calculate and plot average estimates**
+
+```{r}
+# Plot the average estimate against the true mean
+sim_results_ttest |> 
+  group_by(true_mean) |> 
+  summarize(
+    average_estimated_mean = mean(estimate)
+  ) |> 
+  ggplot(aes(
+    x = true_mean, 
+    y = average_estimated_mean
+  )) + 
+  geom_point() + 
+  geom_path() + 
+  labs(
+    title = "Average estimated mean by true mean", 
+    x = "True mean", 
+    y = "Average estimated mean"
+  )
+
+# Plot the average estimate only in samples for which the null was rejected against the true mean
+sim_results_ttest |> 
+  filter(reject_null == TRUE) |> 
+  group_by(true_mean) |> 
+  summarize(
+    average_estimated_mean_rejected = mean(estimate)
+  ) |> 
+  ggplot(aes(x = true_mean, y = average_estimated_mean_rejected)) +
+  geom_point() + 
+  geom_path() + 
+  labs(
+    title = "Average estimated mean by true mean among samples rejecting the null", 
+    x = "True mean", 
+    y = "Average estimated mean"
+  )
+```
+
+The first plot shows that the average of $\widehat{\mu}$ across all simulations is approximately equal to the true $\mu$. 
+
+However, the second plot demonstrates that, among samples where the null hypothesis was rejected, the average of $\widehat{\mu}$ tends to be higher than the true $\mu$ for smaller positive effect sizes (true mean less than 4). This is because samples with larger estimated effects are more likely to produce statistically significant results, thus when conditioning on samples rejecting the null hypothesis, the selected samples will more likely have higher average estimated mean. As the true mean increases, this difference decreases because the statistical power approaches 1. 
